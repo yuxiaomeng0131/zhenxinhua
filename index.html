@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>真心话 · DeepTalk</title>
+<style>
+  :root {
+    --bg-1: #D6D2C4;
+    --bg-2: #C9BFB0;
+    --card: rgba(255, 252, 247, 0.55);
+    --card-border: rgba(255, 255, 255, 0.45);
+    --text-primary: #5C5347;
+    --text-secondary: #8B8174;
+    --accent: #A89B8C;
+    --accent-deep: #8B7D6B;
+    --shadow: 0 8px 32px rgba(92, 83, 71, 0.12);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: "PingFang SC", "Noto Serif SC", "Songti SC", "SimSun", serif;
+    color: var(--text-primary);
+  }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, #BFB8A8 100%);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(201, 191, 176, 0.6) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(183, 173, 160, 0.5) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(214, 210, 196, 0.4) 0%, transparent 60%);
+    z-index: -1;
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-2%, 3%) rotate(2deg); }
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeDown 1s ease-out 0.2s forwards;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .header .subtitle {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+  }
+
+  .header .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 14px auto 0;
+    opacity: 0.6;
+  }
+
+  .card-container {
+    width: 100%;
+    max-width: 420px;
+    perspective: 1200px;
+    margin-bottom: 40px;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card {
+    width: 100%;
+    min-height: 320px;
+    background: var(--card);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 44px 32px 36px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: cardIn 0.8s ease-out 0.4s forwards;
+  }
+
+  @keyframes cardIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card.fade-out {
+    animation: cardOut 0.35s ease-in forwards;
+  }
+
+  @keyframes cardOut {
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  .card.fade-in {
+    animation: cardInNew 0.5s ease-out 0.05s forwards;
+  }
+
+  @keyframes cardInNew {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card::before {
+    content: "「";
+    position: absolute;
+    top: 16px;
+    left: 22px;
+    font-size: 48px;
+    color: var(--accent);
+    opacity: 0.35;
+    line-height: 1;
+    font-family: "Songti SC", "SimSun", serif;
+  }
+
+  .card::after {
+    content: "」";
+    position: absolute;
+    bottom: 60px;
+    right: 22px;
+    font-size: 48px;
+    color: var(--accent);
+    opacity: 0.35;
+    line-height: 1;
+    font-family: "Songti SC", "SimSun", serif;
+  }
+
+  .question {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+  }
+
+  .question-text {
+    font-size: 19px;
+    line-height: 2;
+    text-align: center;
+    color: var(--text-primary);
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(168, 155, 140, 0.2);
+  }
+
+  .tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border: 1px solid rgba(168, 155, 140, 0.3);
+    border-radius: 20px;
+  }
+
+  .counter {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+  }
+
+  .controls {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 1s ease-out 0.6s forwards;
+  }
+
+  .controls-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .controls-tiny {
+    display: flex;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .btn-answered {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(139, 125, 107, 0.45);
+    border-radius: 14px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    background: rgba(255, 252, 247, 0.45);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 300;
+    transition: all 0.25s ease;
+  }
+
+  .btn-answered:hover {
+    background: rgba(255, 252, 247, 0.65);
+    border-color: rgba(139, 125, 107, 0.6);
+  }
+
+  .btn-answered:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-reset {
+    padding: 6px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 300;
+    opacity: 0.75;
+    transition: all 0.25s ease;
+  }
+
+  .btn-reset:hover {
+    opacity: 1;
+    background: rgba(255, 252, 247, 0.3);
+  }
+
+  .progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0 2px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+
+  .progress .dot {
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  .counter {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 16px 28px;
+    border: none;
+    border-radius: 16px;
+    font-size: 15px;
+    letter-spacing: 6px;
+    color: #FFFCF7;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 300;
+    box-shadow: 0 4px 16px rgba(139, 125, 107, 0.25);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(139, 125, 107, 0.32);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(139, 125, 107, 0.2);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(168, 155, 140, 0.4);
+    border-radius: 14px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+    background: rgba(255, 252, 247, 0.3);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 300;
+    transition: all 0.25s ease;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 252, 247, 0.5);
+    border-color: rgba(168, 155, 140, 0.55);
+  }
+
+  .footer-quote {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 380px) {
+    .header h1 { font-size: 19px; letter-spacing: 6px; }
+    .question-text { font-size: 17px; line-height: 1.9; }
+    .card { min-height: 290px; padding: 38px 26px 30px; }
+    .card-container { min-height: 310px; }
+    .btn-primary { padding: 14px 24px; font-size: 14px; letter-spacing: 4px; }
+  }
+
+  @media (min-width: 768px) {
+    .card-container { max-width: 480px; min-height: 380px; }
+    .card { min-height: 360px; padding: 56px 40px 44px; }
+    .question-text { font-size: 21px; line-height: 2.1; }
+    .controls { max-width: 480px; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>真心话</h1>
+    <div class="subtitle">D E E P &nbsp; T A L K</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="card-container">
+    <div class="card" id="card">
+      <div class="question">
+        <p class="question-text" id="questionText">你觉得现在的生活，是过程还是结果？</p>
+      </div>
+      <div class="card-footer">
+        <span class="tag" id="category">自我叩问</span>
+        <span class="counter" id="counter">01 / 20</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn-primary" id="nextBtn">下 一 题</button>
+    <div class="controls-row">
+      <button class="btn-answered" id="answeredBtn">已 回 答</button>
+      <button class="btn-secondary" id="copyBtn">复 制 本 题</button>
+    </div>
+    <div class="progress" id="progress">
+      <span id="progressRemaining">剩余 99 题</span>
+      <span class="dot"></span>
+      <span id="progressAnswered">已答 0 题</span>
+    </div>
+    <div class="controls-tiny">
+      <button class="btn-reset" id="resetBtn">↺ &nbsp; 重 启 题 库</button>
+    </div>
+  </div>
+
+  <div class="footer-quote">向内行走，与自己相遇</div>
+
+<script>
+  // —— 原文189道深度问题（用户提供两份共189题，逐字未修改） ——
+  const questions = [
+    { text: "至今仍藏在心底的遗憾是什么？", category: "深度对话" },
+    { text: "这一生，你最害怕失去什么？", category: "深度对话" },
+    { text: "哪一个瞬间，让你觉得自己被治愈了？", category: "深度对话" },
+    { text: "童年记忆里最温暖的画面是？", category: "深度对话" },
+    { text: "真正让你瞬间长大的那件事。", category: "深度对话" },
+    { text: "你现在还相信“永远”吗？", category: "深度对话" },
+    { text: "此时此刻，你对自己满意吗？", category: "深度对话" },
+    { text: "哪一次选择，让你到现在还在后悔？", category: "深度对话" },
+    { text: "你究竟想成为一个什么样的人？", category: "深度对话" },
+    { text: "想到什么场景，会让你瞬间心安？", category: "深度对话" },
+    { text: "哪一刻让你觉得“活着真好”？", category: "深度对话" },
+    { text: "你现在最想原谅的人是谁？", category: "深度对话" },
+    { text: "独处的时候，你通常在想什么？", category: "深度对话" },
+    { text: "哪句话曾深深刺痛过你？", category: "深度对话" },
+    { text: "那个让你在深夜偷偷想念的人是谁？", category: "深度对话" },
+    { text: "眼下有没有不敢面对的事？", category: "深度对话" },
+    { text: "哪座城市承载了你特别的回忆？", category: "深度对话" },
+    { text: "经历这么多，还相信好人有好报吗？", category: "深度对话" },
+    { text: "有没有一句后悔没说出口的话？", category: "深度对话" },
+    { text: "谁的存在让你觉得踏实？", category: "深度对话" },
+    { text: "你会为了面子而委屈自己吗？", category: "深度对话" },
+    { text: "你觉得婚姻是必需品吗？", category: "深度对话" },
+    { text: "哪些时刻你在假装坚强？", category: "深度对话" },
+    { text: "绝望时，是什么让你看到了希望？", category: "深度对话" },
+    { text: "你会为了现实向理想妥协吗？", category: "深度对话" },
+    { text: "哪怕一瞬间，你觉得自己足够好吗？", category: "深度对话" },
+    { text: "如果时光倒流，最想弥补什么？", category: "深度对话" },
+    { text: "坚持最久的一个习惯是什么？", category: "深度对话" },
+    { text: "抛开世俗，你认为的成功是什么？", category: "深度对话" },
+    { text: "你最讨厌自己性格里的哪一点？", category: "深度对话" },
+    { text: "什么气味会让你觉得安心？", category: "深度对话" },
+    { text: "有过百口莫辩、被深深误解的时刻吗？", category: "深度对话" },
+    { text: "什么是让你感到精神疲惫的根源？", category: "深度对话" },
+    { text: "“家”对你来说意味着什么？", category: "深度对话" },
+    { text: "如果可以，你最想拥有什么超能力？", category: "深度对话" },
+    { text: "成长路上，谁对你的影响最大？", category: "深度对话" },
+    { text: "你内心藏着什么不为人知的小骄傲？", category: "深度对话" },
+    { text: "压力爆炸时，你怎么发泄？", category: "深度对话" },
+    { text: "你觉得这一生被真正理解过吗？", category: "深度对话" },
+    { text: "提起什么事，你就想立刻逃避？", category: "深度对话" },
+    { text: "只要我不说，就没人知道的秘密是？", category: "深度对话" },
+    { text: "哪段关系让你觉得意难平？", category: "深度对话" },
+    { text: "你最怕别人用什么词评价你？", category: "深度对话" },
+    { text: "陌生人给过你怎样的温暖？", category: "深度对话" },
+    { text: "看到什么画面会让你突然泪目？", category: "深度对话" },
+    { text: "说实话，你有过真心的嫉妒吗？", category: "深度对话" },
+    { text: "对未来最大的期待是什么？", category: "深度对话" },
+    { text: "哪次失败，成了你蜕变的转折点？", category: "深度对话" },
+    { text: "如果可以穿越，最想回到哪一刻？", category: "深度对话" },
+    { text: "临死前最想做的一件事？", category: "深度对话" },
+    { text: "具体的哪件事让你觉得“被爱着”？", category: "深度对话" },
+    { text: "有没有什么爱好，曾救过你的命？", category: "深度对话" },
+    { text: "成长对你来说意味着残酷还是礼物？", category: "深度对话" },
+    { text: "最近一次被启发的瞬间？", category: "深度对话" },
+    { text: "哪次相遇，改变了你的人生轨迹？", category: "深度对话" },
+    { text: "最想打包扔掉的一段过去？", category: "深度对话" },
+    { text: "你对友情的底线在哪里？", category: "深度对话" },
+    { text: "分开后，你还会记得对方的好吗？", category: "深度对话" },
+    { text: "哪种时刻让你感到蚀骨的孤独？", category: "深度对话" },
+    { text: "你相信命运是注定的吗？", category: "深度对话" },
+    { text: "现在的你，怎么定义“爱”？", category: "深度对话" },
+    { text: "排序题：金钱、健康、爱，什么最重要？", category: "深度对话" },
+    { text: "你真正和自己和解了吗？", category: "深度对话" },
+    { text: "此时此刻，最想感谢谁？", category: "深度对话" },
+    { text: "你曾为了谁，不顾一切地拼过命？", category: "深度对话" },
+    { text: "你尝试过放下某种执念吗？成功了吗？", category: "深度对话" },
+    { text: "描述一下你眼中的“幸福”画面。", category: "深度对话" },
+    { text: "那个放弃了却还在心里的梦想是？", category: "深度对话" },
+    { text: "看到什么，会让你觉得人类很渺小？", category: "深度对话" },
+    { text: "随着年龄增长，你对时间的看法变了吗？", category: "深度对话" },
+    { text: "有没有一句鼓励，支撑你走了很远？", category: "深度对话" },
+    { text: "你有过深夜痛哭、无法自抑的经历吗？", category: "深度对话" },
+    { text: "冬天里让你觉得温暖的小事？", category: "深度对话" },
+    { text: "你是习惯隐藏，还是习惯表达？", category: "深度对话" },
+    { text: "人性的哪种特质你最珍视？", category: "深度对话" },
+    { text: "你相信一见钟情，还是日久生情？", category: "深度对话" },
+    { text: "什么时刻让你觉得自己“被需要”？", category: "深度对话" },
+    { text: "最害怕重复经历什么样的痛苦？", category: "深度对话" },
+    { text: "被误解时，你会拼命解释吗？", category: "深度对话" },
+    { text: "哪首歌是你的人生BGM？", category: "深度对话" },
+    { text: "现在的你和五年前比，最大的变化是？", category: "深度对话" },
+    { text: "什么样的朋友值得你深交？", category: "深度对话" },
+    { text: "最近一次感到委屈是因为什么？", category: "深度对话" },
+    { text: "你敢在别人面前示弱哭泣吗？", category: "深度对话" },
+    { text: "哪本书真正改变了你的三观？", category: "深度对话" },
+    { text: "陷入自我怀疑时，你怎么走出来？", category: "深度对话" },
+    { text: "你理解的自由是想做什么就做什么吗？", category: "深度对话" },
+    { text: "面对冲突，你通常是战斗还是回避？", category: "深度对话" },
+    { text: "有什么事做起来让你忘了时间？", category: "深度对话" },
+    { text: "你会坚持做一件不喜欢但正确的事吗？", category: "深度对话" },
+    { text: "还有没有特别想去却没去的地方？", category: "深度对话" },
+    { text: "最近有没有被哪个风景/人惊艳到？", category: "深度对话" },
+    { text: "如果现在世界末日，你最想拥抱谁？", category: "深度对话" },
+    { text: "你希望老了以后过什么样的生活？", category: "深度对话" },
+    { text: "哪怕全世界反对，也有人支持你吗？", category: "深度对话" },
+    { text: "今年最想实现的一个小目标？", category: "深度对话" },
+    { text: "谁的眼神让你觉得有力量？", category: "深度对话" },
+    { text: "那个让你心脏猛跳一拍的瞬间？", category: "深度对话" },
+    { text: "你觉得什么样的活法，才算有价值？", category: "深度对话" },
+    { text: "你究竟想成为一个什么样的人？", category: "深度对话" },
+    { text: "此时此刻，你对自己满意吗？", category: "深度对话" },
+    { text: "你最讨厌自己性格里的哪一点？", category: "深度对话" },
+    { text: "抛开世俗，你认为的成功是什么？", category: "深度对话" },
+    { text: "你真正和自己和解了吗？", category: "深度对话" },
+    { text: "现在的你和五年前比，最大的变化是？", category: "深度对话" },
+    { text: "你理解的自由是想做什么就做什么吗？", category: "深度对话" },
+    { text: "你觉得什么样的活法，才算有价值？", category: "深度对话" },
+    { text: "哪一刻让你觉得“活着真好”？", category: "深度对话" },
+    { text: "哪些时刻你在假装坚强？", category: "深度对话" },
+    { text: "具体的哪件事让你觉得“被爱着”？", category: "深度对话" },
+    { text: "现在的你，怎么定义“爱”？", category: "深度对话" },
+    { text: "你相信一见钟情，还是日久生情？", category: "深度对话" },
+    { text: "什么时刻让你觉得自己“被需要”？", category: "深度对话" },
+    { text: "你曾为了谁，不顾一切地拼过命？", category: "深度对话" },
+    { text: "哪种时刻让你感到蚀骨的孤独？", category: "深度对话" },
+    { text: "如果现在世界末日，你最想拥抱谁？", category: "深度对话" },
+    { text: "哪一个瞬间，让你觉得自己治愈了？", category: "深度对话" },
+    { text: "你相信命运是注定的吗？", category: "深度对话" },
+    { text: "你还相信“永远”吗？", category: "深度对话" },
+    { text: "有什么事做起来让你忘了时间？", category: "深度对话" },
+    { text: "有没有什么爱好，曾救过你的命？", category: "深度对话" },
+    { text: "哪首歌是你的人生BGM？", category: "深度对话" },
+    { text: "什么气味会让你觉得安心？", category: "深度对话" },
+    { text: "坚持最久的一个习惯是什么？", category: "深度对话" },
+    { text: "冬天里让你觉得温暖的小事？", category: "深度对话" },
+    { text: "最近有没有被哪个风景/人惊艳到？", category: "深度对话" },
+    { text: "还有没有特别想去却没去的地方？", category: "深度对话" },
+    { text: "你希望老了以后过什么样的生活？", category: "深度对话" },
+    { text: "描述一下你眼中的“幸福”画面。", category: "深度对话" },
+    { text: "至今仍藏在心底的遗憾是什么？", category: "深度对话" },
+    { text: "真正让你瞬间长大的那件事。", category: "深度对话" },
+    { text: "哪一次选择，让你到现在还后悔？", category: "深度对话" },
+    { text: "如果时光倒流，最想弥补什么？", category: "深度对话" },
+    { text: "哪次失败，成了你蜕变的转折点？", category: "深度对话" },
+    { text: "如果可以穿越，最想回到哪一刻？", category: "深度对话" },
+    { text: "临死前最想做的一件事？", category: "深度对话" },
+    { text: "最想打包扔掉的一段过去？", category: "深度对话" },
+    { text: "哪次相遇，改变了你的人生轨迹？", category: "深度对话" },
+    { text: "童年记忆里最温暖的画面是？", category: "深度对话" },
+    { text: "压力快爆炸时，你怎么发泄？", category: "深度对话" },
+    { text: "什么是让你感到精神疲惫的根源？", category: "深度对话" },
+    { text: "提起什么事，你就想立刻逃避？", category: "深度对话" },
+    { text: "绝望时，是什么让你看到了希望？", category: "深度对话" },
+    { text: "你会为了现实向理想妥协吗？", category: "深度对话" },
+    { text: "被误解时，你会拼命解释吗？", category: "深度对话" },
+    { text: "面对冲突，你通常是战斗还是回避？", category: "深度对话" },
+    { text: "陷入自我怀疑时，你怎么走出来？", category: "深度对话" },
+    { text: "有过百口莫辩、被深深误解时刻吗？", category: "深度对话" },
+    { text: "你敢在别人面前示弱哭泣吗？", category: "深度对话" },
+    { text: "那个放弃了却还在心里的梦想是？", category: "深度对话" },
+    { text: "对未来最大的期待是什么？", category: "深度对话" },
+    { text: "你尝试放下某种执念吗？成功了吗？", category: "深度对话" },
+    { text: "如果可以，你最想拥有什么超能力？", category: "深度对话" },
+    { text: "今年最想实现的一个小目标？", category: "深度对话" },
+    { text: "只要我不说，就没人知道的秘密是？", category: "深度对话" },
+    { text: "眼下有没有不敢面对的事？", category: "深度对话" },
+    { text: "哪座城市承载了你特别的回忆？", category: "深度对话" },
+    { text: "看到什么，会让你觉得人类很渺小？", category: "深度对话" },
+    { text: "想到什么场景，会让你瞬间心安？", category: "深度对话" },
+    { text: "谁的存在让你觉得踏实？", category: "深度对话" },
+    { text: "那个让你在深夜偷偷想念的人是谁？", category: "深度对话" },
+    { text: "你会为了面子而委屈自己吗？", category: "深度对话" },
+    { text: "你觉得婚姻是必需品吗？", category: "深度对话" },
+    { text: "“家”对你来说意味着什么？", category: "深度对话" },
+    { text: "你最怕别人用什么词评价你？", category: "深度对话" },
+    { text: "陌生人给过你怎样的温暖？", category: "深度对话" },
+    { text: "哪段关系让你觉得意难平？", category: "深度对话" },
+    { text: "分开后，你还会记得对方的好吗？", category: "深度对话" },
+    { text: "什么样的朋友值得你深交？", category: "深度对话" },
+    { text: "成长路上，谁对你的影响最大？", category: "深度对话" },
+    { text: "成长对你来说意味着残酷还是礼物？", category: "深度对话" },
+    { text: "最近一次被启发的瞬间？", category: "深度对话" },
+    { text: "你觉得这一生被真正理解过吗？", category: "深度对话" },
+    { text: "经历这么多，还相信好人有好报吗？", category: "深度对话" },
+    { text: "有没有一句鼓励，支撑你走了很远？", category: "深度对话" },
+    { text: "哪本书真正改变了你的三观？", category: "深度对话" },
+    { text: "你会坚持做一件不喜欢但正确事吗？", category: "深度对话" },
+    { text: "你内心藏着什么不为人知小骄傲？", category: "深度对话" },
+    { text: "随着年龄增长，你对时间看法变了吗", category: "深度对话" },
+    { text: "排序题：金钱、健康、爱什么最重要", category: "深度对话" },
+    { text: "人性的哪种特质你最珍视？", category: "深度对话" },
+    { text: "说实话，你有过真心的嫉妒吗？", category: "深度对话" },
+    { text: "你是习惯隐藏，还是习惯表达？", category: "深度对话" },
+    { text: "你对友情的底线在哪里？", category: "深度对话" },
+    { text: "最害怕重复经历什么样的痛苦？", category: "深度对话" },
+    { text: "谁的眼神让你觉得有力量？", category: "深度对话" },
+    { text: "那个让你心脏猛跳一拍的瞬间？", category: "深度对话" },
+    { text: "哪怕全世界反对，也有人支持你吗？", category: "深度对话" },
+    { text: "此时此刻，最想感谢谁？", category: "深度对话" }
+  ];
+
+  // ====================== 状态与持久化 ======================
+  const STORAGE_KEY = 'deeptalk.state.v1';
+  const card = document.getElementById('card');
+  const questionText = document.getElementById('questionText');
+  const categoryEl = document.getElementById('category');
+  const counterEl = document.getElementById('counter');
+  const progressRemainingEl = document.getElementById('progressRemaining');
+  const progressAnsweredEl = document.getElementById('progressAnswered');
+  const nextBtn = document.getElementById('nextBtn');
+  const answeredBtn = document.getElementById('answeredBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // answered: Set<number>  已回答的题目索引
+  // currentIndex: number   当前显示的题目索引
+  let answered = new Set();
+  let currentIndex = -1;
+  let isAnimating = false;
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        answered: Array.from(answered),
+        currentIndex,
+        // 版本号：若题目数变化了，下一次加载会自动重置
+        version: questions.length
+      }));
+    } catch (e) {}
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const s = JSON.parse(raw);
+      if (!s || s.version !== questions.length) return false;
+      answered = new Set(Array.isArray(s.answered) ? s.answered : []);
+      if (typeof s.currentIndex === 'number' && s.currentIndex >= 0 && s.currentIndex < questions.length) {
+        currentIndex = s.currentIndex;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // 剩余待抽的索引池（不包含已回答）
+  function getRemainingPool() {
+    const pool = [];
+    for (let i = 0; i < questions.length; i++) {
+      if (!answered.has(i)) pool.push(i);
+    }
+    return pool;
+  }
+
+  function pad(n) {
+    return n < 10 ? '0' + n : '' + n;
+  }
+
+  function updateProgress() {
+    const total = questions.length;
+    const done = answered.size;
+    const left = total - done;
+    progressRemainingEl.textContent = '剩余 ' + left + ' 题';
+    progressAnsweredEl.textContent = '已答 ' + done + ' 题';
+    counterEl.textContent = pad((currentIndex >= 0 ? currentIndex : 0) + 1) + ' / ' + pad(total);
+  }
+
+  function setButtonsEnabled(enabled) {
+    nextBtn.disabled = !enabled;
+    answeredBtn.disabled = !enabled;
+  }
+
+  // 从剩余池中随机抽一道与当前不同的；如果剩余池中只剩当前题，那就允许重复
+  function pickNextRandom() {
+    let pool = getRemainingPool();
+    if (pool.length === 0) {
+      // 全部答完了，无新题可抽 → 返回-1标记
+      return -1;
+    }
+    // 过滤掉当前题（如果有多个候选）
+    const candidates = pool.filter(i => i !== currentIndex);
+    const p = candidates.length > 0 ? candidates : pool;
+    return p[Math.floor(Math.random() * p.length)];
+  }
+
+  function renderCurrent() {
+    const q = questions[currentIndex];
+    questionText.textContent = q.text;
+    categoryEl.textContent = q.category;
+    updateProgress();
+  }
+
+  // 切换题目（带动画）；targetIdx=-1 表示无题可抽
+  function animateToCard(targetIdx, onDone) {
+    if (isAnimating) return;
+    isAnimating = true;
+    setButtonsEnabled(false);
+
+    card.classList.add('fade-out');
+
+    setTimeout(() => {
+      if (targetIdx >= 0) {
+        currentIndex = targetIdx;
+        renderCurrent();
+        saveState();
+        card.classList.remove('fade-out');
+        card.classList.remove('fade-in');
+        void card.offsetWidth;
+        card.classList.add('fade-in');
+      } else {
+        // 没有剩余题目：显示提示但留在原题
+        questionText.textContent = '所有题目都已回答过，点击「重启题库」即可重新相遇。';
+        categoryEl.textContent = '终章';
+      }
+
+      setTimeout(() => {
+        isAnimating = false;
+        // 如果题库空了，「下一题」和「已回答」禁用，但复制仍可用
+        const poolEmpty = getRemainingPool().length === 0;
+        nextBtn.disabled = poolEmpty;
+        answeredBtn.disabled = poolEmpty;
+        if (onDone) onDone();
+      }, 550);
+    }, 350);
+  }
+
+  // —— 三个按钮的动作 ——
+
+  function actNext() {
+    const nextIdx = pickNextRandom();
+    animateToCard(nextIdx);
+  }
+
+  function actAnswered() {
+    // 先把当前题标记为已答
+    if (currentIndex >= 0) {
+      answered.add(currentIndex);
+      saveState();
+      updateProgress();
+    }
+    // 然后抽下一张
+    const nextIdx = pickNextRandom();
+    animateToCard(nextIdx);
+  }
+
+  function actReset() {
+    answered = new Set();
+    saveState();
+    // 从全部题目中重新随机首张（避免直接显示当前题）
+    const firstIdx = Math.floor(Math.random() * questions.length);
+    animateToCard(firstIdx, () => {
+      // 视觉反馈
+      const t = resetBtn.textContent;
+      resetBtn.textContent = '↺ &nbsp; 已 重 启 ✓';
+      setTimeout(() => { resetBtn.textContent = t; }, 1500);
+    });
+  }
+
+  // —— 复制本题 ——
+  function copyCurrent() {
+    const text = questionText.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        const original = copyBtn.textContent;
+        copyBtn.textContent = '已 复 制 ✓';
+        setTimeout(() => { copyBtn.textContent = original; }, 1500);
+      }).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      const original = copyBtn.textContent;
+      copyBtn.textContent = '已 复 制 ✓';
+      setTimeout(() => { copyBtn.textContent = original; }, 1500);
+    } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  // ====================== 初始化 ======================
+  (function init() {
+    const loaded = loadState();
+    if (!loaded || currentIndex < 0) {
+      // 首次或版本变更：随机首题
+      currentIndex = Math.floor(Math.random() * questions.length);
+      saveState();
+    }
+    renderCurrent();
+
+    nextBtn.addEventListener('click', actNext);
+    answeredBtn.addEventListener('click', actAnswered);
+    copyBtn.addEventListener('click', copyCurrent);
+    resetBtn.addEventListener('click', actReset);
+  })();
+</script>
+</body>
+</html>
