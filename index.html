@@ -64,6 +64,32 @@
     100% { transform: translate(-2%, 3%) rotate(2deg); }
   }
 
+  /* ============ 视图切换 ============ */
+  .view { width: 100%; }
+
+  .view.hidden { display: none; }
+
+  #homeView {
+    height: 100%;
+    max-width: 560px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0 28px;
+    animation: fadeUp 0.6s ease-out;
+  }
+
+  #gameView {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    animation: fadeUp 0.6s ease-out;
+  }
+
   .header {
     text-align: center;
     margin-bottom: 32px;
@@ -93,11 +119,136 @@
     opacity: 0.6;
   }
 
+  /* ============ 首页板块 ============ */
+  .board-hint {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-bottom: 18px;
+  }
+
+  .board-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .board-card {
+    width: 100%;
+    background: var(--card);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    animation: fadeUp 0.7s ease-out both;
+  }
+
+  .board-card:nth-child(1) { animation-delay: 0.15s; }
+  .board-card:nth-child(2) { animation-delay: 0.25s; }
+  .board-card:nth-child(3) { animation-delay: 0.35s; }
+
+  .board-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 36px rgba(92, 83, 71, 0.18);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .board-card:active {
+    transform: translateY(0);
+  }
+
+  .board-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .board-emoji {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .board-title {
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+  }
+
+  .board-desc {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.9;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+  }
+
+  .board-foot {
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .board-count {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--accent-deep);
+    border: 1px solid rgba(168, 155, 140, 0.35);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+
+  .board-go {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    transition: color 0.25s ease;
+  }
+
+  .board-card:hover .board-go {
+    color: var(--accent-deep);
+  }
+
+  /* ============ 游戏页 ============ */
+  .back-row {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .btn-back {
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 300;
+    padding: 6px 4px;
+    transition: color 0.25s ease;
+  }
+
+  .btn-back:hover {
+    color: var(--accent-deep);
+  }
+
   .card-container {
     width: 100%;
     max-width: 420px;
     perspective: 1200px;
-    margin-bottom: 40px;
+    margin-bottom: 18px;
     min-height: 340px;
     display: flex;
     align-items: center;
@@ -236,10 +387,23 @@
     gap: 12px;
   }
 
-  .controls-tiny {
+  .main-area {
+    width: 100%;
+    flex: 1 0 auto;
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    margin-top: 2px;
+    margin: auto 0;
+  }
+
+  .bottom-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 2px;
   }
 
   .btn-answered {
@@ -269,23 +433,32 @@
   }
 
   .btn-reset {
-    padding: 6px 16px;
-    border: none;
-    background: transparent;
-    border-radius: 20px;
-    font-size: 11px;
-    letter-spacing: 2.5px;
-    color: var(--text-secondary);
+    padding: 10px 32px;
+    border: 1px solid rgba(139, 125, 107, 0.4);
+    border-radius: 999px;
+    background: rgba(255, 252, 247, 0.38);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--accent-deep);
     cursor: pointer;
     font-family: inherit;
     font-weight: 300;
-    opacity: 0.75;
+    box-shadow: 0 2px 12px rgba(92, 83, 71, 0.1);
     transition: all 0.25s ease;
   }
 
   .btn-reset:hover {
-    opacity: 1;
-    background: rgba(255, 252, 247, 0.3);
+    background: rgba(255, 252, 247, 0.6);
+    border-color: rgba(139, 125, 107, 0.58);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(92, 83, 71, 0.15);
+  }
+
+  .btn-reset:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 6px rgba(92, 83, 71, 0.1);
   }
 
   .progress {
@@ -293,7 +466,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    padding: 4px 0 2px;
+    margin-bottom: 18px;
     font-size: 11px;
     letter-spacing: 1.5px;
     color: var(--text-secondary);
@@ -305,12 +478,6 @@
     border-radius: 50%;
     background: var(--text-secondary);
     opacity: 0.5;
-  }
-
-  .counter {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--text-secondary);
   }
 
   @keyframes fadeDown {
@@ -379,14 +546,10 @@
   }
 
   .footer-quote {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     font-size: 11px;
     letter-spacing: 2px;
     color: var(--text-secondary);
-    opacity: 0.5;
+    opacity: 0.55;
     white-space: nowrap;
   }
 
@@ -396,6 +559,8 @@
     .card { min-height: 290px; padding: 38px 26px 30px; }
     .card-container { min-height: 310px; }
     .btn-primary { padding: 14px 24px; font-size: 14px; letter-spacing: 4px; }
+    .board-card { padding: 18px 20px; }
+    .board-title { font-size: 15px; }
   }
 
   @media (min-width: 768px) {
@@ -403,49 +568,315 @@
     .card { min-height: 360px; padding: 56px 40px 44px; }
     .question-text { font-size: 21px; line-height: 2.1; }
     .controls { max-width: 480px; }
+    .back-row { max-width: 480px; }
+    .board-list { max-width: 480px; }
   }
 </style>
 </head>
 <body>
-  <div class="header">
-    <h1>真心话</h1>
-    <div class="subtitle">D E E P &nbsp; T A L K</div>
-    <div class="divider"></div>
-  </div>
 
-  <div class="card-container">
-    <div class="card" id="card">
-      <div class="question">
-        <p class="question-text" id="questionText">你觉得现在的生活，是过程还是结果？</p>
+  <!-- ======================= 首页：板块选择 ======================= -->
+  <section id="homeView" class="view">
+    <div class="header">
+      <h1>真心话</h1>
+      <div class="subtitle">D E E P &nbsp; T A L K</div>
+      <div class="divider"></div>
+    </div>
+
+    <div class="board-hint">选 一 个 板 块 ，抽 你 的 第 一 张 卡</div>
+
+    <div class="board-list">
+      <button class="board-card" data-board="light">
+        <div class="board-head">
+          <span class="board-emoji">✨</span>
+          <span class="board-title">轻日常闲聊</span>
+        </div>
+        <p class="board-desc">轻松无压力，适合破冰、普通聚会，偏向生活、喜好、小趣事，不深挖内心伤痛，无尖锐拷问。</p>
+        <div class="board-foot">
+          <span class="board-count" id="countLight">200 题</span>
+          <span class="board-go">进入抽卡 →</span>
+        </div>
+      </button>
+
+      <button class="board-card" data-board="deep">
+        <div class="board-head">
+          <span class="board-emoji">🕯️</span>
+          <span class="board-title">深度话题</span>
+        </div>
+        <p class="board-desc">向内行走，与自己相遇。适合安静的夜晚和对的人，聊聊那些平时不常开口的问题。</p>
+        <div class="board-foot">
+          <span class="board-count" id="countDeep">— 题</span>
+          <span class="board-go">进入抽卡 →</span>
+        </div>
+      </button>
+
+      <button class="board-card" data-board="mixed">
+        <div class="board-head">
+          <span class="board-emoji">🎲</span>
+          <span class="board-title">混合盲盒</span>
+        </div>
+        <p class="board-desc">轻日常与深度话题随机混抽，拆开才知道：今晚是浅浅一聊，还是走进内心。</p>
+        <div class="board-foot">
+          <span class="board-count" id="countMixed">— 题</span>
+          <span class="board-go">进入抽卡 →</span>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ======================= 游戏页：抽卡 ======================= -->
+  <section id="gameView" class="view hidden">
+    <div class="main-area">
+      <div class="back-row">
+        <button class="btn-back" id="backBtn">← 返回板块</button>
       </div>
-      <div class="card-footer">
-        <span class="tag" id="category">自我叩问</span>
-        <span class="counter" id="counter">01 / 20</span>
+
+      <div class="header" style="margin-bottom: 20px;">
+        <h1 id="gameTitle" style="font-size: 18px;">轻日常闲聊</h1>
+        <div class="subtitle" id="gameSub">L I G H T &nbsp; C H A T</div>
+        <div class="divider"></div>
+      </div>
+
+      <div class="card-container">
+        <div class="card" id="card">
+          <div class="question">
+            <p class="question-text" id="questionText">你觉得现在的生活，是过程还是结果？</p>
+          </div>
+          <div class="card-footer">
+            <span class="tag" id="category">自我叩问</span>
+            <span class="counter" id="counter">01 / 20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress" id="progress">
+        <span id="progressRemaining">剩余 189 题</span>
+        <span class="dot"></span>
+        <span id="progressAnswered">已答 0 题</span>
+      </div>
+
+      <div class="controls">
+        <button class="btn-primary" id="nextBtn">下 一 题</button>
+        <div class="controls-row">
+          <button class="btn-answered" id="answeredBtn">已 回 答</button>
+          <button class="btn-secondary" id="copyBtn">复 制 本 题</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <button class="btn-primary" id="nextBtn">下 一 题</button>
-    <div class="controls-row">
-      <button class="btn-answered" id="answeredBtn">已 回 答</button>
-      <button class="btn-secondary" id="copyBtn">复 制 本 题</button>
+    <div class="bottom-area">
+      <button class="btn-reset" id="resetBtn">↺ &nbsp;重 启 题 库</button>
+      <div class="footer-quote">向内行走，与自己相遇</div>
     </div>
-    <div class="progress" id="progress">
-      <span id="progressRemaining">剩余 99 题</span>
-      <span class="dot"></span>
-      <span id="progressAnswered">已答 0 题</span>
-    </div>
-    <div class="controls-tiny">
-      <button class="btn-reset" id="resetBtn">↺ &nbsp; 重 启 题 库</button>
-    </div>
-  </div>
-
-  <div class="footer-quote">向内行走，与自己相遇</div>
+  </section>
 
 <script>
-  // —— 原文189道深度问题（用户提供两份共189题，逐字未修改） ——
-  const questions = [
+  // —— 轻日常闲聊 200 题（轻松无压力，无尖锐拷问）——
+  const LIGHT_RAW = [
+    "最近循环播放的一首歌是什么？",
+    "你耳机里的歌单，偏哪种风格？",
+    "去KTV你必点的一首歌是？",
+    "有没有一首歌，让你一听就想起某个夏天？",
+    "有没有哪句歌词，你一直记到现在？",
+    "如果给自己的日常配一段BGM，你选什么风格？",
+    "唱歌水平怎么样？敢在朋友面前唱吗？",
+    "你的歌单里有没有一首“别人都不爱但你就爱”的歌？",
+    "小时候最喜欢的动画片是什么？",
+    "最近看的电影或剧，值得安利吗？",
+    "你更爱看喜剧还是悬疑片？",
+    "有没有一部电影，你愿意反复看很多遍？",
+    "有没有一部老剧，你会忍不住重刷？",
+    "你会为一部新片专门跑一趟影院吗？",
+    "你更爱刷短视频，还是追长剧？",
+    "最喜欢的一种小吃是什么？",
+    "最近吃到的、觉得惊艳的食物是什么？",
+    "你的家乡有什么值得炫耀的美食？",
+    "火锅蘸料，你的独家配方是什么？",
+    "甜党还是咸党？豆腐脑和粽子各站哪边？",
+    "你最拿手的一道菜是什么？",
+    "有没有一种食物，你死活咽不下去？",
+    "深夜饿了，你的首选夜宵是什么？",
+    "奶茶你惯点的是什么口味？",
+    "你能吃辣到什么程度？",
+    "一日三餐里，你最离不开哪一餐？",
+    "有没有一家店，你不知不觉成了常客？",
+    "如果只能带一种食物上荒岛，你选什么？",
+    "你更爱吃米饭还是面食？",
+    "最近有没有解锁什么新餐厅或新口味？",
+    "小时候的零食里，你最怀念哪一款？",
+    "你会做饭吗？给自己打几颗星？",
+    "吃火锅时你的必点三样是？",
+    "水果里你的最爱是哪种？",
+    "有没有独家发明的“黑暗料理”吃法？",
+    "你最想去哪个城市旅行？",
+    "今年有出行计划吗？目的地定了没？",
+    "旅行时你喜欢做攻略，还是随性走？",
+    "有没有一个地方，你去过还想再去？",
+    "海边和山里，你更想去哪个度周末？",
+    "你旅行时必买的一样东西是什么？",
+    "坐火车和坐飞机，你更喜欢哪个？",
+    "如果有三天小长假，你会怎么安排？",
+    "旅途中你遇到过什么好笑或暖心的事？",
+    "你的家乡最有意思的一处地方是？",
+    "旅行时你拍照多，还是纯看景多？",
+    "周边短途游和远途大旅行，哪个更吸引你？",
+    "有没有哪个城市的美食，让你念念不忘？",
+    "你住过最有感觉的民宿或酒店是哪家？",
+    "如果现在就能出发，你想去哪？",
+    "你更喜欢晴天还是下雨天？",
+    "四个季节里，你最喜欢哪个？",
+    "下雨天你喜欢做什么？",
+    "夏天最让你难受的是什么？冬天呢？",
+    "你喜欢雪吗？最近一次看雪是什么时候？",
+    "什么温度会让你觉得最舒服？",
+    "遇到台风、暴雨这种天气，你是兴奋还是担心？",
+    "你喜欢太阳晒过被子的味道吗？",
+    "秋天你觉得最有仪式感的一件事是什么？",
+    "梅雨季和桑拿天，你更能忍受哪个？",
+    "如果可以养宠物，想养什么？",
+    "你现在家里有养小动物吗？",
+    "猫和狗，你的天平倾向哪边？",
+    "你见过最可爱的动物是什么？",
+    "如果变成一种动物过一天，你想变成什么？",
+    "你养过植物吗？活下来了几盆？",
+    "你怕什么小动物吗？比如蛇、蜘蛛？",
+    "动物园里你最爱的展区是哪个？",
+    "如果宠物会说话，你最想跟它聊什么？",
+    "朋友说你的气质像什么动物？",
+    "小时候玩过最上头的游戏是什么？",
+    "你的暑假作业一般什么时候写完？",
+    "小时候的梦想职业是什么？",
+    "你小时候收藏过什么奇怪的小玩意儿？",
+    "小时候放学路上最爱干的事是什么？",
+    "你被爸妈没收过什么东西吗？",
+    "童年最爱的一档电视节目是？",
+    "小时候有没有干过什么“惊天动地”的事？",
+    "你的第一台电子设备是什么？",
+    "小时候你觉得最威风的一件事是什么？",
+    "你是早起型还是熬夜型？",
+    "睡前最后一件事一般是在刷什么？",
+    "周末一般会怎么打发时间？",
+    "手机里最近一张照片拍的是什么？",
+    "每天醒来后你的第一件事是什么？",
+    "你现在的手机壁纸是什么？",
+    "有什么无害的小癖好可以分享吗？",
+    "你走路偏快还是偏慢？",
+    "你的微信步数一般在什么水平？",
+    "你有囤东西的习惯吗？囤什么？",
+    "你的桌面或房间，现在是乱是整齐？",
+    "你习惯用左手还是右手？",
+    "你的收藏夹里现在吃着什么灰？",
+    "洗澡时你会哼歌或者想事情吗？",
+    "通勤路上你一般干什么？",
+    "记东西你靠便签、备忘录，还是全凭脑子？",
+    "你换手机壳的频率高吗？",
+    "出门前你检查最多次的一样东西是？",
+    "你是泡澡派、淋浴派，还是“快速冲完”派？",
+    "你的闹钟一般定几个？",
+    "如果可以拥有一个小超能力，你选什么？",
+    "如果中了五百万，你第一件事做什么？",
+    "如果能穿越到一部剧里生活，你选哪部？",
+    "如果明天不用上班上学，你会干嘛？",
+    "如果可以和一位活着的名人吃顿饭，你选谁？",
+    "假如可以瞬间移动，你最想先去哪？",
+    "如果能听懂动物说话，你最想问它什么？",
+    "如果给你一间空房间随便布置，你想用来做什么？",
+    "如果可以开一家小店，你想开什么店？",
+    "假如你的生活变成一档综艺，节目名叫什么？",
+    "如果有个家务机器人，你让它先干哪件活？",
+    "如果世界上只能剩一种调味料，你希望是什么？",
+    "如果往时间胶囊里放一样东西，你放什么？",
+    "如果能和十年后的自己视频一分钟，你会问什么？",
+    "如果你能拥有动画里的一件道具，你选哪个？",
+    "如果现在给你一年带薪假，你打算怎么过？",
+    "如果能瞬间学会一项技能，你选什么？",
+    "如果给你一支笔和一面白墙，你会画什么？",
+    "如果让你给小区门口的奶茶店起个名，你起什么？",
+    "如果用一种食物形容自己，你是哪一种？",
+    "奶茶和咖啡，选哪个？",
+    "夏天和冬天，选哪个？",
+    "海边和雪原，选哪个？",
+    "看书和看电影，选哪个？",
+    "一夜暴富和细水长流，选哪个？",
+    "在山里住一周和在城里逛一周，选哪个？",
+    "会飞和会隐身，选哪个？",
+    "永远不用做家务和永远不用排队，选哪个？",
+    "吃遍全世界和玩遍全世界，选哪个？",
+    "手机没电一天和断网一天，哪个更崩溃？",
+    "和名人共进晚餐，还是和好友彻夜露营？",
+    "独居和合租，你更想要哪个？",
+    "春游和秋游，选哪个？",
+    "全款买便宜的和分期买喜欢的，你倾向哪个？",
+    "歌单被公开和相册被公开，你选哪个？",
+    "最近一次大笑是因为什么？",
+    "这周有没有什么小确幸？",
+    "最近让你“上头”的一件事是什么？",
+    "你最近买的最值的一样东西是什么？",
+    "大扫除时你翻出过什么好玩的旧物吗？",
+    "最近有没有学会什么新东西？",
+    "你最近一次夸别人是因为什么？",
+    "最近让你觉得“真方便”的一个APP或工具是？",
+    "最近有没有吃到什么特别好吃的？",
+    "用一句话形容你今天过得怎么样？",
+    "你最近一次出门玩是什么时候？去了哪？",
+    "什么样的天气会让你心情变好？",
+    "最近有没有坚持住一件小事？",
+    "你最近的入睡速度怎么样？",
+    "最近一次觉得“自己真棒”是因为什么？",
+    "你有什么坚持了很久的爱好？",
+    "你的清单上有没有想学还没学的？",
+    "你会一种乐器吗？或者最想学哪种？",
+    "你平时玩什么游戏？手游还是主机？",
+    "你的运动细胞怎么样？",
+    "你喜欢拼图、乐高这类“拼装”吗？",
+    "你有收集癖吗？收集什么？",
+    "你喜欢拍照吗？最爱拍什么？",
+    "你有写日记或记账的习惯吗？",
+    "你刷哪个平台刷得最多？",
+    "你的购物车里现在躺着什么？",
+    "你喜欢逛街吗？逛哪类店最自在？",
+    "你有没有擅长到可以露一手的技能？",
+    "桌游、剧本杀、密室，你pick哪个？",
+    "你上一次尝试新事物是什么时候？",
+    "你是“恋床星人”吗？起床要缓多久？",
+    "你的枕头被子有特别的讲究吗？",
+    "你午睡吗？一般睡多久？",
+    "你的房间最舒服的一个角落是哪里？",
+    "冬天起床靠闹钟还是靠意志力？",
+    "你的视力怎么样？戴眼镜吗？",
+    "你有什么缓解疲劳的小方法？",
+    "你更爱喝热水、凉水还是冰水？",
+    "你的行李箱收拾得快吗？",
+    "你的手巧吗？会做手工吗？",
+    "你是“该花就花”型还是“精打细算”型？",
+    "你最近一次冲动消费买了什么？",
+    "你的钱主要花在哪一块？",
+    "你愿意为爱好花“大钱”吗？花在哪？",
+    "双十一这类大促你还参与吗？",
+    "你买过最值或最不值的东西是什么？",
+    "你有记账的习惯吗？",
+    "你更爱网购还是线下逛买？",
+    "聚会时你是话多型还是安静观察型？",
+    "你有几个可以随叫随到的朋友？",
+    "你的朋友们一般怎么称呼你？",
+    "你擅长安慰人，还是擅长逗人笑？",
+    "你是自来熟，还是需要慢慢热？",
+    "你上一次约朋友吃饭是什么时候？",
+    "群聊里你是潜水型还是冒泡型？",
+    "你喜欢和家人分享日常吗？",
+    "你更爱一对一聊天，还是一群人热热闹闹？",
+    "你在网上和线下判若两人吗？",
+    "你会给朋友起外号吗？",
+    "你记得好朋友们的生日吗？",
+    "你最常用的APP是哪一个？",
+    "你的朋友圈是三天可见吗？",
+    "如果给今天拍一张照片存档，你会拍什么？",
+    "你会晕车吗？有什么防晕妙招？",
+    "你现在的心情，像哪种天气？"
+  ];
+
+  // —— 深度话题（原文逐字未修改）——
+  const DEEP_RAW = [
     { text: "至今仍藏在心底的遗憾是什么？", category: "深度对话" },
     { text: "这一生，你最害怕失去什么？", category: "深度对话" },
     { text: "哪一个瞬间，让你觉得自己被治愈了？", category: "深度对话" },
@@ -637,8 +1068,21 @@
     { text: "此时此刻，最想感谢谁？", category: "深度对话" }
   ];
 
+  // —— 板块配置 ——
+  const LIGHT_QUESTIONS = LIGHT_RAW.map(function (t) { return { text: t, category: "轻日常" }; });
+  const MIXED_QUESTIONS = LIGHT_QUESTIONS.concat(DEEP_RAW);
+
+  const BOARDS = {
+    light: { title: "✨ 轻日常闲聊", sub: "L I G H T &nbsp; C H A T", questions: LIGHT_QUESTIONS },
+    deep:  { title: "🕯️ 深度话题", sub: "D E E P &nbsp; T A L K", questions: DEEP_RAW },
+    mixed: { title: "🎲 混合盲盒", sub: "M I X E D &nbsp; B O X", questions: MIXED_QUESTIONS }
+  };
+
   // ====================== 状态与持久化 ======================
-  const STORAGE_KEY = 'deeptalk.state.v1';
+  const homeView = document.getElementById('homeView');
+  const gameView = document.getElementById('gameView');
+  const gameTitle = document.getElementById('gameTitle');
+  const gameSub = document.getElementById('gameSub');
   const card = document.getElementById('card');
   const questionText = document.getElementById('questionText');
   const categoryEl = document.getElementById('category');
@@ -649,19 +1093,25 @@
   const answeredBtn = document.getElementById('answeredBtn');
   const copyBtn = document.getElementById('copyBtn');
   const resetBtn = document.getElementById('resetBtn');
+  const backBtn = document.getElementById('backBtn');
 
-  // answered: Set<number>  已回答的题目索引
-  // currentIndex: number   当前显示的题目索引
-  let answered = new Set();
+  let boardKey = null;       // 当前板块：light / deep / mixed
+  let questions = [];        // 当前板块题库
+  let answered = new Set();  // 已回答的题目索引
   let currentIndex = -1;
   let isAnimating = false;
 
+  function storageKey(key) {
+    return 'deeptalk.state.v2.' + key;
+  }
+
   function saveState() {
+    if (!boardKey) return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      localStorage.setItem(storageKey(boardKey), JSON.stringify({
         answered: Array.from(answered),
         currentIndex,
-        // 版本号：若题目数变化了，下一次加载会自动重置
+        // 版本号：若题库数量变化了，下一次加载会自动重置
         version: questions.length
       }));
     } catch (e) {}
@@ -669,7 +1119,7 @@
 
   function loadState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(storageKey(boardKey));
       if (!raw) return false;
       const s = JSON.parse(raw);
       if (!s || s.version !== questions.length) return false;
@@ -717,7 +1167,6 @@
       // 全部答完了，无新题可抽 → 返回-1标记
       return -1;
     }
-    // 过滤掉当前题（如果有多个候选）
     const candidates = pool.filter(i => i !== currentIndex);
     const p = candidates.length > 0 ? candidates : pool;
     return p[Math.floor(Math.random() * p.length)];
@@ -748,14 +1197,12 @@
         void card.offsetWidth;
         card.classList.add('fade-in');
       } else {
-        // 没有剩余题目：显示提示但留在原题
         questionText.textContent = '所有题目都已回答过，点击「重启题库」即可重新相遇。';
         categoryEl.textContent = '终章';
       }
 
       setTimeout(() => {
         isAnimating = false;
-        // 如果题库空了，「下一题」和「已回答」禁用，但复制仍可用
         const poolEmpty = getRemainingPool().length === 0;
         nextBtn.disabled = poolEmpty;
         answeredBtn.disabled = poolEmpty;
@@ -764,7 +1211,7 @@
     }, 350);
   }
 
-  // —— 三个按钮的动作 ——
+  // —— 按钮动作 ——
 
   function actNext() {
     const nextIdx = pickNextRandom();
@@ -772,13 +1219,11 @@
   }
 
   function actAnswered() {
-    // 先把当前题标记为已答
     if (currentIndex >= 0) {
       answered.add(currentIndex);
       saveState();
       updateProgress();
     }
-    // 然后抽下一张
     const nextIdx = pickNextRandom();
     animateToCard(nextIdx);
   }
@@ -786,12 +1231,10 @@
   function actReset() {
     answered = new Set();
     saveState();
-    // 从全部题目中重新随机首张（避免直接显示当前题）
     const firstIdx = Math.floor(Math.random() * questions.length);
     animateToCard(firstIdx, () => {
-      // 视觉反馈
       const t = resetBtn.textContent;
-      resetBtn.textContent = '↺ &nbsp; 已 重 启 ✓';
+      resetBtn.textContent = '↺ 已 重 启 ✓';
       setTimeout(() => { resetBtn.textContent = t; }, 1500);
     });
   }
@@ -826,21 +1269,65 @@
     document.body.removeChild(ta);
   }
 
-  // ====================== 初始化 ======================
-  (function init() {
+  // —— 视图切换 ——
+
+  function enterBoard(key) {
+    boardKey = key;
+    questions = BOARDS[key].questions;
+    answered = new Set();
+    currentIndex = -1;
+
+    gameTitle.innerHTML = BOARDS[key].title;
+    gameSub.innerHTML = BOARDS[key].sub;
+
     const loaded = loadState();
     if (!loaded || currentIndex < 0) {
-      // 首次或版本变更：随机首题
       currentIndex = Math.floor(Math.random() * questions.length);
       saveState();
     }
-    renderCurrent();
 
-    nextBtn.addEventListener('click', actNext);
-    answeredBtn.addEventListener('click', actAnswered);
-    copyBtn.addEventListener('click', copyCurrent);
-    resetBtn.addEventListener('click', actReset);
-  })();
+    homeView.classList.add('hidden');
+    gameView.classList.remove('hidden');
+    gameView.style.animation = 'none';
+    void gameView.offsetWidth;
+    gameView.style.animation = '';
+
+    // 重置卡片动画状态
+    card.classList.remove('fade-out', 'fade-in');
+    void card.offsetWidth;
+
+    renderCurrent();
+    const poolEmpty = getRemainingPool().length === 0;
+    nextBtn.disabled = poolEmpty;
+    answeredBtn.disabled = poolEmpty;
+  }
+
+  function goHome() {
+    saveState();
+    boardKey = null;
+    questions = [];
+    gameView.classList.add('hidden');
+    homeView.classList.remove('hidden');
+    homeView.style.animation = 'none';
+    void homeView.offsetWidth;
+    homeView.style.animation = '';
+  }
+
+  // —— 首页题数徽章 ——
+  document.getElementById('countLight').textContent = BOARDS.light.questions.length + ' 题';
+  document.getElementById('countDeep').textContent = BOARDS.deep.questions.length + ' 题';
+  document.getElementById('countMixed').textContent = BOARDS.mixed.questions.length + ' 题';
+
+  // ====================== 事件绑定 ======================
+  document.querySelectorAll('.board-card').forEach(btn => {
+    btn.addEventListener('click', () => enterBoard(btn.dataset.board));
+  });
+
+  nextBtn.addEventListener('click', actNext);
+  answeredBtn.addEventListener('click', actAnswered);
+  copyBtn.addEventListener('click', copyCurrent);
+  resetBtn.addEventListener('click', actReset);
+  backBtn.addEventListener('click', goHome);
 </script>
 </body>
 </html>
