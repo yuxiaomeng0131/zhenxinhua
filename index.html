@@ -69,6 +69,12 @@
 
   .view.hidden { display: none; }
 
+  /* ID 选择器的 display:flex 会压过 .view.hidden，需用同级特异性覆盖 */
+  #homeView.hidden,
+  #gameView.hidden {
+    display: none;
+  }
+
   #homeView {
     height: 100%;
     max-width: 560px;
@@ -381,12 +387,6 @@
     animation: fadeUp 1s ease-out 0.6s forwards;
   }
 
-  .controls-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
   .main-area {
     width: 100%;
     flex: 1 0 auto;
@@ -402,63 +402,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 9px;
     padding-bottom: 2px;
-  }
-
-  .btn-answered {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid rgba(139, 125, 107, 0.45);
-    border-radius: 14px;
-    font-size: 13px;
-    letter-spacing: 3px;
-    color: var(--text-primary);
-    background: rgba(255, 252, 247, 0.45);
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 300;
-    transition: all 0.25s ease;
-  }
-
-  .btn-answered:hover {
-    background: rgba(255, 252, 247, 0.65);
-    border-color: rgba(139, 125, 107, 0.6);
-  }
-
-  .btn-answered:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-reset {
-    padding: 10px 32px;
-    border: 1px solid rgba(139, 125, 107, 0.4);
-    border-radius: 999px;
-    background: rgba(255, 252, 247, 0.38);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    font-size: 12px;
-    letter-spacing: 3px;
-    color: var(--accent-deep);
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 300;
-    box-shadow: 0 2px 12px rgba(92, 83, 71, 0.1);
-    transition: all 0.25s ease;
-  }
-
-  .btn-reset:hover {
-    background: rgba(255, 252, 247, 0.6);
-    border-color: rgba(139, 125, 107, 0.58);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(92, 83, 71, 0.15);
-  }
-
-  .btn-reset:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 6px rgba(92, 83, 71, 0.1);
   }
 
   .progress {
@@ -490,59 +434,85 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .btn-primary {
+  /* —— 三个操作按钮：渐变由深至浅 —— */
+  .btn-main {
     width: 100%;
-    padding: 16px 28px;
+    padding: 15px 28px;
     border: none;
     border-radius: 16px;
-    font-size: 15px;
+    font-size: 14px;
     letter-spacing: 6px;
-    color: #FFFCF7;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
     cursor: pointer;
     font-family: inherit;
     font-weight: 300;
-    box-shadow: 0 4px 16px rgba(139, 125, 107, 0.25);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
   }
 
-  .btn-primary:hover {
+  .btn-main .emoji {
+    margin-right: 10px;
+    letter-spacing: 0;
+    font-size: 15px;
+  }
+
+  .btn-main:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 22px rgba(139, 125, 107, 0.32);
   }
 
-  .btn-primary:active {
+  .btn-main:active {
     transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(139, 125, 107, 0.2);
   }
 
-  .btn-primary:disabled {
-    opacity: 0.6;
+  .btn-main:disabled {
+    opacity: 0.55;
     cursor: not-allowed;
     transform: none;
   }
 
-  .btn-secondary {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid rgba(168, 155, 140, 0.4);
-    border-radius: 14px;
-    font-size: 13px;
-    letter-spacing: 3px;
-    color: var(--text-secondary);
-    background: rgba(255, 252, 247, 0.3);
-    backdrop-filter: blur(10px);
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 300;
-    transition: all 0.25s ease;
+  /* 深：下一题 */
+  .btn-deep {
+    color: #FFFCF7;
+    background: linear-gradient(135deg, #8B7D6B 0%, #A89B8C 100%);
+    box-shadow: 0 4px 16px rgba(139, 125, 107, 0.28);
   }
 
-  .btn-secondary:hover {
-    background: rgba(255, 252, 247, 0.5);
-    border-color: rgba(168, 155, 140, 0.55);
+  .btn-deep:hover {
+    box-shadow: 0 6px 22px rgba(139, 125, 107, 0.36);
+  }
+
+  .btn-deep:active {
+    box-shadow: 0 2px 10px rgba(139, 125, 107, 0.22);
+  }
+
+  /* 中：已回答 */
+  .btn-mid {
+    color: #FFFCF7;
+    background: linear-gradient(135deg, #A89B8C 0%, #C0B4A4 100%);
+    box-shadow: 0 4px 16px rgba(168, 155, 140, 0.25);
+  }
+
+  .btn-mid:hover {
+    box-shadow: 0 6px 22px rgba(168, 155, 140, 0.33);
+  }
+
+  .btn-mid:active {
+    box-shadow: 0 2px 10px rgba(168, 155, 140, 0.2);
+  }
+
+  /* 浅：重启题库 */
+  .btn-light {
+    color: var(--text-primary);
+    background: linear-gradient(135deg, #C6BAA9 0%, #DDD6C6 100%);
+    box-shadow: 0 4px 14px rgba(168, 155, 140, 0.18);
+  }
+
+  .btn-light:hover {
+    box-shadow: 0 6px 20px rgba(168, 155, 140, 0.26);
+  }
+
+  .btn-light:active {
+    box-shadow: 0 2px 8px rgba(168, 155, 140, 0.16);
   }
 
   .footer-quote {
@@ -558,7 +528,7 @@
     .question-text { font-size: 17px; line-height: 1.9; }
     .card { min-height: 290px; padding: 38px 26px 30px; }
     .card-container { min-height: 310px; }
-    .btn-primary { padding: 14px 24px; font-size: 14px; letter-spacing: 4px; }
+    .btn-main { padding: 13px 24px; font-size: 13px; letter-spacing: 4px; }
     .board-card { padding: 18px 20px; }
     .board-title { font-size: 15px; }
   }
@@ -650,22 +620,19 @@
       </div>
 
       <div class="progress" id="progress">
-        <span id="progressRemaining">剩余 189 题</span>
+        <span id="progressRemaining">剩余 0 题</span>
         <span class="dot"></span>
         <span id="progressAnswered">已答 0 题</span>
       </div>
 
       <div class="controls">
-        <button class="btn-primary" id="nextBtn">下 一 题</button>
-        <div class="controls-row">
-          <button class="btn-answered" id="answeredBtn">已 回 答</button>
-          <button class="btn-secondary" id="copyBtn">复 制 本 题</button>
-        </div>
+        <button class="btn-main btn-deep" id="nextBtn"><span class="emoji">🎴</span>下 一 题</button>
+        <button class="btn-main btn-mid" id="answeredBtn"><span class="emoji">✒️</span>已 回 答</button>
+        <button class="btn-main btn-light" id="resetBtn"><span class="emoji">🌿</span>重 启 题 库</button>
       </div>
     </div>
 
     <div class="bottom-area">
-      <button class="btn-reset" id="resetBtn">↺ &nbsp;重 启 题 库</button>
       <div class="footer-quote">向内行走，与自己相遇</div>
     </div>
   </section>
@@ -1091,7 +1058,6 @@
   const progressAnsweredEl = document.getElementById('progressAnswered');
   const nextBtn = document.getElementById('nextBtn');
   const answeredBtn = document.getElementById('answeredBtn');
-  const copyBtn = document.getElementById('copyBtn');
   const resetBtn = document.getElementById('resetBtn');
   const backBtn = document.getElementById('backBtn');
 
@@ -1234,39 +1200,9 @@
     const firstIdx = Math.floor(Math.random() * questions.length);
     animateToCard(firstIdx, () => {
       const t = resetBtn.textContent;
-      resetBtn.textContent = '↺ 已 重 启 ✓';
+      resetBtn.textContent = '🌿 已 重 启 ✓';
       setTimeout(() => { resetBtn.textContent = t; }, 1500);
     });
-  }
-
-  // —— 复制本题 ——
-  function copyCurrent() {
-    const text = questionText.textContent;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        const original = copyBtn.textContent;
-        copyBtn.textContent = '已 复 制 ✓';
-        setTimeout(() => { copyBtn.textContent = original; }, 1500);
-      }).catch(() => fallbackCopy(text));
-    } else {
-      fallbackCopy(text);
-    }
-  }
-
-  function fallbackCopy(text) {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-      document.execCommand('copy');
-      const original = copyBtn.textContent;
-      copyBtn.textContent = '已 复 制 ✓';
-      setTimeout(() => { copyBtn.textContent = original; }, 1500);
-    } catch (e) {}
-    document.body.removeChild(ta);
   }
 
   // —— 视图切换 ——
@@ -1325,7 +1261,6 @@
 
   nextBtn.addEventListener('click', actNext);
   answeredBtn.addEventListener('click', actAnswered);
-  copyBtn.addEventListener('click', copyCurrent);
   resetBtn.addEventListener('click', actReset);
   backBtn.addEventListener('click', goHome);
 </script>
